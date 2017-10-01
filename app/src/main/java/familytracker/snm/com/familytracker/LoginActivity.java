@@ -59,7 +59,7 @@ public class LoginActivity extends Activity {
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
+//        btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -84,12 +84,12 @@ public class LoginActivity extends Activity {
 
             public void onClick(View view) {
                 String userName = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
+//                String password = inputPassword.getText().toString().trim();
 
                 // Check for empty data in the form
-                if (!userName.isEmpty() && !password.isEmpty()) {
+                if (!userName.isEmpty()) {
                     // login user
-                    checkLogin(userName, password);
+                    checkLogin(userName, "test");
                 } else {
                     // Prompt user to enter credentials
                     Toast.makeText(getApplicationContext(),
@@ -101,15 +101,15 @@ public class LoginActivity extends Activity {
         });
 
         // Link to Register Screen
-        btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),
-                        RegisterActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
+//        btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View view) {
+//                Intent i = new Intent(getApplicationContext(),
+//                        RegisterActivity.class);
+//                startActivity(i);
+//                finish();
+//            }
+//        });
 
 
     }
@@ -120,91 +120,100 @@ public class LoginActivity extends Activity {
     private void checkLogin(final String userName, final String password) {
         // Tag used to cancel the request
         String tag_string_req = "req_login";
-        JSONObject jsonRequest = new JSONObject();
-        try {
-            JSONObject userDetails = new JSONObject();
-            userDetails.put("userName",userName);
-            userDetails.put("password", password);
-            jsonRequest.put("signIn",userDetails);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        pDialog.setMessage("Logging in ...");
-        showDialog();
 
-        JsonObjectRequest strReq = new JsonObjectRequest(Method.POST,
-                AppConfig.URL_LOGIN, jsonRequest, new Response.Listener<JSONObject>() {
+        db.addUser(userName, userName+"@gmail.com", "123", "jwt_token");
+        session.setLogin(true);
 
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "Login Response: " + response.toString());
-                hideDialog();
+        // Launch main activity
+        Intent intent = new Intent(LoginActivity.this,
+                MainActivity.class);
+        startActivity(intent);
 
-                try {
-                    // Check for error node in json
-                    if (response!=null) {
-                        // user successfully logged in
-                        // Create login session
+//        JSONObject jsonRequest = new JSONObject();
+//        try {
+//            JSONObject userDetails = new JSONObject();
+//            userDetails.put("userName",userName);
+//            userDetails.put("password", password);
+//            jsonRequest.put("signIn",userDetails);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        pDialog.setMessage("Logging in ...");
+//        showDialog();
 
-
-                        // Now store the user in SQLite
-
-
-                        JSONObject data = response.getJSONObject("data");
-                        JSONObject account = data.getJSONObject("account");
-                        String uid      = account.getString("_id");
-                        String name     = account.getString("firstName") + " " + account.getString("lastName");
-                        String email    = account.getString("email");
-                        String jwt_token = data.getString("jwt");
-
-                        // Inserting row in users table
-                        db.addUser(name, email, uid, jwt_token);
-                        session.setLogin(true);
-
-                        // Launch main activity
-                        Intent intent = new Intent(LoginActivity.this,
-                                MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Error in login. Get the error message
-                       // String errorMsg = jObj.getString("error_msg");
-//                        Toast.makeText(getApplicationContext(),
-//                                errorMsg, Toast.LENGTH_LONG).show();
-                    }
-                } catch (Exception e) {
-                    // JSON error
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
-                hideDialog();
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("userName", userName);
-                params.put("password", password);
-
-                return params;
-            }
-
-        };
+//        JsonObjectRequest strReq = new JsonObjectRequest(Method.POST,
+//                AppConfig.URL_LOGIN, jsonRequest, new Response.Listener<JSONObject>() {
+//
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                Log.d(TAG, "Login Response: " + response.toString());
+//                hideDialog();
+//
+//                try {
+//                    // Check for error node in json
+//                    if (response!=null) {
+//                        // user successfully logged in
+//                        // Create login session
+//
+//
+//                        // Now store the user in SQLite
+//
+//
+//                        JSONObject data = response.getJSONObject("data");
+//                        JSONObject account = data.getJSONObject("account");
+//                        String uid      = account.getString("_id");
+//                        String name     = account.getString("firstName") + " " + account.getString("lastName");
+//                        String email    = account.getString("email");
+//                        String jwt_token = data.getString("jwt");
+//
+//                        // Inserting row in users table
+//                        db.addUser(name, email, uid, jwt_token);
+//                        session.setLogin(true);
+//
+//                        // Launch main activity
+//                        Intent intent = new Intent(LoginActivity.this,
+//                                MainActivity.class);
+//                        startActivity(intent);
+//                        finish();
+//                    } else {
+//                        // Error in login. Get the error message
+//                       // String errorMsg = jObj.getString("error_msg");
+////                        Toast.makeText(getApplicationContext(),
+////                                errorMsg, Toast.LENGTH_LONG).show();
+//                    }
+//                } catch (Exception e) {
+//                    // JSON error
+//                    e.printStackTrace();
+//                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+//                }
+//
+//            }
+//        }, new Response.ErrorListener() {
+//
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e(TAG, "Login Error: " + error.getMessage());
+//                Toast.makeText(getApplicationContext(),
+//                        error.getMessage(), Toast.LENGTH_LONG).show();
+//                hideDialog();
+//            }
+//        }) {
+//
+//            @Override
+//            protected Map<String, String> getParams() {
+//                // Posting parameters to login url
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("userName", userName);
+//                params.put("password", password);
+//
+//                return params;
+//            }
+//
+//        };
 
         // Adding request to request queue
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(strReq);
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        queue.add(strReq);
     }
 
     private void showDialog() {

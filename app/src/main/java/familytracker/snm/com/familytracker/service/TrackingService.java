@@ -104,10 +104,10 @@ public class TrackingService extends Service implements Handler.Callback{
                 //Request location updates:
                 PackageManager pm = getApplicationContext().getPackageManager();
                 if(pm.hasSystemFeature(PackageManager.FEATURE_LOCATION_NETWORK)) {
-                    lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, new MyLocationListener(getApplicationContext()), _looper);
+                    lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 31000, 0, new MyLocationListener(getApplicationContext()), _looper);
                 }
 //                if(pm.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)) {
-                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 6000, 0, new MyLocationListener(getApplicationContext()), _looper);
+                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, new MyLocationListener(getApplicationContext()), _looper);
 //                }
             }else {
                 Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);

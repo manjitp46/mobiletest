@@ -27,7 +27,7 @@
             android:singleLine="true"
             android:textColor="@color/input_login"
             android:textColorHint="@color/input_login_hint" />
-
+        <!-- Field to show password  password commit
         <EditText
             android:id="@+id/password"
             android:layout_width="fill_parent"
@@ -40,6 +40,7 @@
             android:singleLine="true"
             android:textColor="@color/input_login"
             android:textColorHint="@color/input_login_hint" />
+            -->
 
         <!-- Login Button -->
 
@@ -52,7 +53,7 @@
             android:text="@string/btn_login"
             android:textColor="@color/btn_login" />
 
-        <!-- Link to Login Screen -->
+        <!-- Link to Login Screen  commented to simplyfy code
 
         <Button
             android:id="@+id/btnLinkToRegisterScreen"
@@ -64,6 +65,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15dp" />
+             -->
 
     </LinearLayout>
 

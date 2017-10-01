@@ -21,8 +21,11 @@ public class TimestampUtils{
     }
 
     public static String getISO8601StringForDate(Date date){
-        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"+"+05:30", Locale.UK);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        //Old Data
+        //DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"+"+05:30", Locale.UK);
+        //New Format
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
         return dateFormat.format(date);
     }
 

@@ -13,7 +13,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
     <string name="app_name">Family tracker</string>
-    <string name="hint_email">Email</string>
+    <string name="hint_email">Enter Your Name</string>
     <string name="hint_password">Password</string>
     <string name="hint_name">Fullname</string>
     <string name="btn_login">LOGIN</string>

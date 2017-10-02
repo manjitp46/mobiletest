@@ -92,13 +92,14 @@ public class MyLocationListener implements LocationListener {
             locationObj.put("coordinate",coordinate);
             JSONObject assosiationObj = getJsonObject();
             assosiationObj.put("name",user.get("name"));
-            assosiationObj.put("deviceName",android.os.Build.MODEL);
-            assosiationObj.put("battery", BatteryUtil.getBatteryPercentage(mcontext)+"");
-            assosiationObj.put("androidVersion", Build.VERSION.RELEASE);
-
+            JSONObject deviceObj = new JSONObject();
+            deviceObj.put("deviceName",android.os.Build.MODEL);
+            deviceObj.put("battery", BatteryUtil.getBatteryPercentage(mcontext)+"");
+            deviceObj.put("androidVersion", Build.VERSION.RELEASE);
             JSONObject dataObj = getJsonObject();
             dataObj.put("time",TimestampUtils.getISO8601StringForDate(new Date(location.getTime())));
             dataObj.put("location",locationObj);
+            dataObj.put("deviceInfo",deviceObj);
             dataObj.put("assosiation",assosiationObj);
             jsonDataToSend.put("data",dataObj);
 //            jsonDataToSend.put("checkinType","Location");

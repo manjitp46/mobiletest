@@ -52,7 +52,7 @@ public class TrackingService extends Service implements Handler.Callback{
     public final static String HANDLER_THREAD_NAME = "MYLocationTHREAD";
 
     final static String Tag = "Location Monitoring";
-
+    static boolean isLogoutClicked = false;
     LocationListener _listener;
     Looper _looper;
     android.os.Handler _handler;
@@ -74,6 +74,11 @@ public class TrackingService extends Service implements Handler.Callback{
 
         String threadId = Thread.currentThread().getId() + "";
         _handler.sendMessage(_handler.obtainMessage(0,intent));
+        if (intent.hasExtra("logout")) {
+            if (intent.getExtras().get("logout").equals("logout")) {
+                isLogoutClicked = true;
+            }
+        }
         return START_STICKY;
     }
 
@@ -89,6 +94,14 @@ public class TrackingService extends Service implements Handler.Callback{
         doStopTracking();
         if(_looper!=null){
             _looper.quit();
+        }
+        if (isLogoutClicked) {
+            Intent broadcastIntent = new Intent(ACTION_START_MONITORING);
+            broadcastIntent.putExtra("logout",true);
+            sendBroadcast(broadcastIntent);
+        }else{
+            Intent broadcastIntent = new Intent(ACTION_START_MONITORING);
+            sendBroadcast(broadcastIntent);
         }
     }
 
@@ -146,6 +159,7 @@ public class TrackingService extends Service implements Handler.Callback{
             }
             _listener=null;
             stopSelf();
+
         }
     }
 }

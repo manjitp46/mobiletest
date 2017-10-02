@@ -26,10 +26,26 @@
             </intent-filter>
         </activity>
         <service android:name=".service.MyStartedService"/>
-        <service android:name=".service.TrackingService"/>
+        <service android:name=".service.TrackingService"
+            android:isolatedProcess="false"
+            android:enabled="true"
+
+        >
+            <intent-filter>
+                <action android:name="com.snm.familytracker.START_MONITORING"></action>
+            </intent-filter>
+        </service>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity"></activity>
-
+        <receiver
+            android:name=".broadcastreciever.RestartTrackingServiceRReciever"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+            <intent-filter>
+                <action android:name="com.snm.familytracker.START_MONITORING"/>
+            </intent-filter>
+        </receiver>
 
 
     </application>

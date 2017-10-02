@@ -25,22 +25,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import familytracker.snm.com.familytracker.config.AppConfig;
 import familytracker.snm.com.familytracker.helper.SQLiteHandler;
 import familytracker.snm.com.familytracker.service.TrackingService;
+import familytracker.snm.com.familytracker.utils.BatteryUtil;
+import familytracker.snm.com.familytracker.utils.TimestampUtils;
 
 public class MainActivity extends Activity {
     private TextView txtName;
     private TextView txtEmail;
     private Button btnLogout;
+    private Intent trackingServiceIntent;
     private SQLiteHandler db;
+    private static final String TAG = "MAINACTIVITY";
     private SessionManager session;
+    private String userNameGlobal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +57,15 @@ public class MainActivity extends Activity {
         txtName = (TextView) findViewById(R.id.name);
         txtEmail = (TextView) findViewById(R.id.email);
         btnLogout = (Button) findViewById(R.id.btnLogout);
+        //disabling logout button temporary to avoid logout
+        btnLogout.setEnabled(false);
 //        if(!runtime_permissions())
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Intent i = new Intent(this, TrackingService.class);
-            i.setAction(TrackingService.ACTION_START_MONITORING);
-            startService(i);
+            this.trackingServiceIntent = new Intent(getApplicationContext(), TrackingService.class);
+            this.trackingServiceIntent.setAction(TrackingService.ACTION_START_MONITORING);
+            startService(this.trackingServiceIntent);
+
         }
         else{
             Toast.makeText(this,"Please Open GPS for Better Tracking",Toast.LENGTH_LONG).show();
@@ -83,6 +94,7 @@ public class MainActivity extends Activity {
 
         String name = user.get("name");
         String email = user.get("email");
+        this.userNameGlobal =name;
 
         // Displaying the user details on the screen
         txtName.setText(name);
@@ -101,18 +113,42 @@ public class MainActivity extends Activity {
 //
     private void logoutUserFromDevice() {
         session.setLogin(false);
+
         // Deleting User Info From LocalDb
         db.deleteUsers();
 
         //Stopping The running Location tracking Service
-        Intent i = new Intent(this, TrackingService.class);
-        i.setAction(TrackingService.ACTION_STOP_MONITORING);
-        startService(i);
+
+        this.trackingServiceIntent.setAction(TrackingService.ACTION_STOP_MONITORING);
+        this.trackingServiceIntent.putExtra("logout","logout");
+        startService(trackingServiceIntent);
+
+
 
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
+
+        //sending Logout Data To Server
+
+        try {
+            JSONObject deviceObj = new JSONObject();
+            deviceObj.put("deviceName",android.os.Build.MODEL);
+            deviceObj.put("battery", BatteryUtil.getBatteryPercentage(this)+"");
+            deviceObj.put("androidVersion", Build.VERSION.RELEASE);
+            JSONObject loginInfoObj = new JSONObject();
+            loginInfoObj.put("time", TimestampUtils.getISO8601StringForCurrentDate());
+            loginInfoObj.put("type","logout");
+            loginInfoObj.put("name",this.userNameGlobal);
+            loginInfoObj.put("deviceInfo",deviceObj);
+            String testData = new JSONObject().put("data",loginInfoObj).toString();
+            Log.i(TAG,testData);
+            Log.d(TAG,new JSONObject().put("data",loginInfoObj).toString());
+            sendLogoutHistoryToServer(getApplicationContext(),new JSONObject().put("data",loginInfoObj));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -143,7 +179,32 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent i = new Intent(this,TrackingService.class);
-        stopService(i);
+        this.trackingServiceIntent = new Intent(this,TrackingService.class);
+        stopService(this.trackingServiceIntent);
     }
+
+    public void sendLogoutHistoryToServer(Context context,JSONObject data){
+        JsonObjectRequest historyRequest = new JsonObjectRequest(Request.Method.POST, AppConfig.HISTORY_URL,
+                data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i(TAG,response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG,error.toString());
+            }
+        }
+        )
+        {
+
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(historyRequest);
+    }
+
+
 }

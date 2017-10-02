@@ -3,10 +3,12 @@ package familytracker.snm.com.familytracker;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -37,6 +39,8 @@ import familytracker.snm.com.familytracker.helper.SQLiteHandler;
 import familytracker.snm.com.familytracker.listener.MyLocationListener;
 import familytracker.snm.com.familytracker.service.MyStartedService;
 import familytracker.snm.com.familytracker.service.TrackingService;
+import familytracker.snm.com.familytracker.utils.BatteryUtil;
+import familytracker.snm.com.familytracker.utils.TimestampUtils;
 
 
 public class LoginActivity extends Activity {
@@ -124,6 +128,23 @@ public class LoginActivity extends Activity {
         db.addUser(userName, userName+"@gmail.com", "123", "jwt_token");
         session.setLogin(true);
 
+        try {
+            JSONObject deviceObj = new JSONObject();
+            deviceObj.put("deviceName",android.os.Build.MODEL);
+            deviceObj.put("battery", BatteryUtil.getBatteryPercentage(this)+"");
+            deviceObj.put("androidVersion", Build.VERSION.RELEASE);
+            JSONObject loginInfoObj = new JSONObject();
+            loginInfoObj.put("time", TimestampUtils.getISO8601StringForCurrentDate());
+            loginInfoObj.put("type","login");
+            loginInfoObj.put("name",userName);
+            loginInfoObj.put("deviceInfo",deviceObj);
+            String testData = new JSONObject().put("data",loginInfoObj).toString();
+            Log.i(TAG,testData);
+            Log.d(TAG,new JSONObject().put("data",loginInfoObj).toString());
+            sendLoginHistoryToServer(this,new JSONObject().put("data",loginInfoObj));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         // Launch main activity
         Intent intent = new Intent(LoginActivity.this,
                 MainActivity.class);
@@ -271,4 +292,26 @@ public class LoginActivity extends Activity {
             }
         }
     }
-}
+    public void sendLoginHistoryToServer(Context context,JSONObject data){
+        JsonObjectRequest historyRequest = new JsonObjectRequest(Method.POST, AppConfig.HISTORY_URL,
+                data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i(TAG,response.toString());
+
+            }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i(TAG,error.toString());
+                }
+            }
+        )
+            {
+
+            };
+
+        RequestQueue queue =Volley.newRequestQueue(context);
+        queue.add(historyRequest);
+        }
+    }

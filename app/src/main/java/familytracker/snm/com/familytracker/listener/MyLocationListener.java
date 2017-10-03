@@ -31,7 +31,9 @@ import java.util.TimeZone;
 import familytracker.snm.com.familytracker.config.AppConfig;
 import familytracker.snm.com.familytracker.helper.SQLiteHandler;
 import familytracker.snm.com.familytracker.utils.BatteryUtil;
+import familytracker.snm.com.familytracker.utils.DeviceInfo;
 import familytracker.snm.com.familytracker.utils.TimestampUtils;
+import familytracker.snm.com.familytracker.utils.UserInfoUtil;
 
 
 /**
@@ -41,6 +43,7 @@ import familytracker.snm.com.familytracker.utils.TimestampUtils;
 public class MyLocationListener implements LocationListener {
     Context mcontext;
     static HashMap<String,String > user;
+    static final String TAG = "MylocationListioner";
    public MyLocationListener(){
 
     }
@@ -64,17 +67,19 @@ public class MyLocationListener implements LocationListener {
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        sendProviderDetailsToServer("status is changed",provider);
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        String threadId = Thread.currentThread().getId()+"";
+        sendProviderDetailsToServer("enabled",provider);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
+        String threadId = Thread.currentThread().getId()+"";
+        sendProviderDetailsToServer("disabled",provider);
     }
 
     public void sendLocationDataToServer(final Location location, HashMap<String,String> user){
@@ -153,6 +158,44 @@ public class MyLocationListener implements LocationListener {
         RequestQueue queue = Volley.newRequestQueue(mcontext);
         queue.add(request);
     }
+
+    public void sendProviderDetailsToServer(String status,String locationProvideName){
+        JSONObject data = new JSONObject();
+        JSONObject dataBody = new JSONObject();
+        String threadId = Thread.currentThread().getId()+"";
+        try {
+            dataBody.put("time",TimestampUtils.getISO8601StringForCurrentDate());
+            dataBody.put("type",locationProvideName+" is "+status );
+            dataBody.put("name", UserInfoUtil.getUserName(mcontext));
+            dataBody.put("deviceInfo", DeviceInfo.getDeviceInfo(mcontext));
+            data.put("data",dataBody);
+            Log.d(Tag,data.toString());
+            Log.i(Tag,data.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest historyRequest = new JsonObjectRequest(Request.Method.POST, AppConfig.HISTORY_URL,
+                data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i(TAG,response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG,error.toString());
+            }
+        }
+        )
+        {
+
+        };
+
+        RequestQueue queue =Volley.newRequestQueue(mcontext);
+        queue.add(historyRequest);
+    }
+
 
     public JSONObject getJsonObject(){
         return  new JSONObject();

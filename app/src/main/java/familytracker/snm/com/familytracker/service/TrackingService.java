@@ -110,9 +110,12 @@ public class TrackingService extends Service implements Handler.Callback{
         try {
             _listener = new MyLocationListener();
             LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-            if (ContextCompat.checkSelfPermission(this,
+            if ((ContextCompat.checkSelfPermission(this,
+                    Manifest.permission. ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED)
+                    ||(ContextCompat.checkSelfPermission(this,
                     Manifest.permission. ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
+                    == PackageManager.PERMISSION_GRANTED)) {
 
                 //Request location updates:
                 PackageManager pm = getApplicationContext().getPackageManager();

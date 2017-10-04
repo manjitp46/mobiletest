@@ -32,6 +32,7 @@ import familytracker.snm.com.familytracker.config.AppConfig;
 import familytracker.snm.com.familytracker.helper.SQLiteHandler;
 import familytracker.snm.com.familytracker.utils.BatteryUtil;
 import familytracker.snm.com.familytracker.utils.DeviceInfo;
+import familytracker.snm.com.familytracker.utils.LocationUtil;
 import familytracker.snm.com.familytracker.utils.TimestampUtils;
 import familytracker.snm.com.familytracker.utils.UserInfoUtil;
 
@@ -94,6 +95,7 @@ public class MyLocationListener implements LocationListener {
             locationObj.put("type",location.getProvider().equals("gps")?"gps":"network");
             locationObj.put("altitude",location.getAltitude()+"");
             locationObj.put("accuracy",location.getAccuracy()+"");
+            locationObj.put("fullAddress",LocationUtil.getTextAddress(mcontext,location.getLatitude(),location.getLongitude(),5));
             locationObj.put("coordinate",coordinate);
             JSONObject assosiationObj = getJsonObject();
             assosiationObj.put("name",user.get("name"));

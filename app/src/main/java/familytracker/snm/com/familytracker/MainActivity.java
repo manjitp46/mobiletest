@@ -110,7 +110,19 @@ public class MainActivity extends Activity {
         });
     }
 
-//
+    //overRiding onResumeMethod to fix issue when user prompted to start gps service not starting
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.trackingServiceIntent = new Intent(getApplicationContext(), TrackingService.class);
+        this.trackingServiceIntent.setAction(TrackingService.ACTION_START_MONITORING);
+        startService(this.trackingServiceIntent);
+
+    }
+
+    //
     private void logoutUserFromDevice() {
         session.setLogin(false);
 

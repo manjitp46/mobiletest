@@ -79,7 +79,7 @@ public class TrackingService extends Service implements Handler.Callback{
                 isLogoutClicked = true;
             }
         }
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @Nullable

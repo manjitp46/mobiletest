@@ -11,11 +11,11 @@ import familytracker.snm.com.familytracker.service.TrackingService;
  * Created by kumanjit on 10/2/2017.
  */
 
-public class RestartTrackingServiceRReciever extends BroadcastReceiver {
+public class RestartTrackingServiceReciever extends BroadcastReceiver {
     static boolean isLogout = false;
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(RestartTrackingServiceRReciever.class.getSimpleName(), "Service Stops! Oooooooooooooppppssssss!!!!");
+        Log.i(RestartTrackingServiceReciever.class.getSimpleName(), "Service Stops! Oooooooooooooppppssssss!!!!");
         if (intent.hasExtra("logout")){
             isLogout = intent.getExtras().getBoolean("logout");
         }

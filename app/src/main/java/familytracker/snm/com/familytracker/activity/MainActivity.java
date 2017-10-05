@@ -1,9 +1,7 @@
-package familytracker.snm.com.familytracker;
+package familytracker.snm.com.familytracker.activity;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
@@ -13,14 +11,12 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +30,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import familytracker.snm.com.familytracker.R;
+import familytracker.snm.com.familytracker.SessionManager;
 import familytracker.snm.com.familytracker.config.AppConfig;
 import familytracker.snm.com.familytracker.helper.SQLiteHandler;
 import familytracker.snm.com.familytracker.service.TrackingService;
@@ -58,7 +56,7 @@ public class MainActivity extends Activity {
         txtEmail = (TextView) findViewById(R.id.email);
         btnLogout = (Button) findViewById(R.id.btnLogout);
         //disabling logout button temporary to avoid logout
-        btnLogout.setEnabled(false);
+        btnLogout.setEnabled(true);
 //        if(!runtime_permissions())
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {

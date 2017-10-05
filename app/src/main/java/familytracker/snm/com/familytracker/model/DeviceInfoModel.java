@@ -1,10 +1,12 @@
 package familytracker.snm.com.familytracker.model;
 
+import io.realm.RealmObject;
+
 /**
  * Created by kumanjit on 10/4/2017.
  */
 
-public class DeviceInfoModel {
+public class DeviceInfoModel extends RealmObject{
     private String deviceName;
     private String battery;
     private String androidVersion;

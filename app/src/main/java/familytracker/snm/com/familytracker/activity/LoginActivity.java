@@ -1,4 +1,4 @@
-package familytracker.snm.com.familytracker;
+package familytracker.snm.com.familytracker.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,14 +6,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -31,16 +28,18 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
+import familytracker.snm.com.familytracker.R;
+import familytracker.snm.com.familytracker.SessionManager;
 import familytracker.snm.com.familytracker.config.AppConfig;
 import familytracker.snm.com.familytracker.helper.SQLiteHandler;
-import familytracker.snm.com.familytracker.listener.MyLocationListener;
-import familytracker.snm.com.familytracker.service.MyStartedService;
-import familytracker.snm.com.familytracker.service.TrackingService;
+import familytracker.snm.com.familytracker.model.AssociationModel;
+import familytracker.snm.com.familytracker.model.CheckinDataModel;
+import familytracker.snm.com.familytracker.model.DeviceInfoModel;
 import familytracker.snm.com.familytracker.utils.BatteryUtil;
 import familytracker.snm.com.familytracker.utils.TimestampUtils;
+import io.realm.Realm;
 
 
 public class LoginActivity extends Activity {
@@ -54,6 +53,7 @@ public class LoginActivity extends Activity {
     private SQLiteHandler db;
     private Button btnStart;
     private Button btnStop;
+    private Realm myRealm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,7 +127,21 @@ public class LoginActivity extends Activity {
 
         db.addUser(userName, userName+"@gmail.com", "123", "jwt_token");
         session.setLogin(true);
-
+        String primaryKey = UUID.randomUUID().toString();
+        Realm.init(this);
+        myRealm = Realm.getDefaultInstance();
+        myRealm.beginTransaction();
+        DeviceInfoModel deviceInfoModel = myRealm.createObject(DeviceInfoModel.class);
+        AssociationModel associationModel = myRealm.createObject(AssociationModel.class);
+        CheckinDataModel checkinDataModel = myRealm.createObject(CheckinDataModel.class,primaryKey);
+        deviceInfoModel.setBattery(BatteryUtil.getBatteryPercentage(this)+"");
+        deviceInfoModel.setAndroidVersion(Build.VERSION.RELEASE);
+        deviceInfoModel.setDeviceName(Build.MODEL);
+        associationModel.setName(userName);
+        checkinDataModel.setTime(TimestampUtils.getISO8601StringForCurrentDate());
+        checkinDataModel.setDeviceInfo(deviceInfoModel);
+        checkinDataModel.setAssociation(associationModel);
+        myRealm.commitTransaction();
         try {
             JSONObject deviceObj = new JSONObject();
             deviceObj.put("deviceName",android.os.Build.MODEL);

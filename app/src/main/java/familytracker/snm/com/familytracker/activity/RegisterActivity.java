@@ -1,4 +1,4 @@
-package familytracker.snm.com.familytracker;
+package familytracker.snm.com.familytracker.activity;
 
 import android.os.Bundle;
 
@@ -25,6 +25,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import familytracker.snm.com.familytracker.R;
+import familytracker.snm.com.familytracker.SessionManager;
 import familytracker.snm.com.familytracker.config.AppConfig;
 import familytracker.snm.com.familytracker.helper.SQLiteHandler;
 

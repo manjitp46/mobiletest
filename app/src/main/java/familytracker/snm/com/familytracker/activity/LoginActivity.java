@@ -38,6 +38,7 @@ import familytracker.snm.com.familytracker.model.AssociationModel;
 import familytracker.snm.com.familytracker.model.CheckinDataModel;
 import familytracker.snm.com.familytracker.model.DeviceInfoModel;
 import familytracker.snm.com.familytracker.utils.BatteryUtil;
+import familytracker.snm.com.familytracker.utils.DeviceInfoUtil;
 import familytracker.snm.com.familytracker.utils.TimestampUtils;
 import io.realm.Realm;
 
@@ -141,6 +142,7 @@ public class LoginActivity extends Activity {
         checkinDataModel.setTime(TimestampUtils.getISO8601StringForCurrentDate());
         checkinDataModel.setDeviceInfo(deviceInfoModel);
         checkinDataModel.setAssociation(associationModel);
+        boolean isInterNateAvailable = DeviceInfoUtil.isNetworkAvailable(this);
         myRealm.commitTransaction();
         try {
             JSONObject deviceObj = new JSONObject();

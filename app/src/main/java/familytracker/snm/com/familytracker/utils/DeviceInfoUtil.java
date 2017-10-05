@@ -3,6 +3,8 @@ package familytracker.snm.com.familytracker.utils;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.compat.BuildConfig;
 import org.json.JSONException;
@@ -14,9 +16,9 @@ import familytracker.snm.com.familytracker.AppController;
  * Created by kumanjit on 10/4/2017.
  */
 
-public class DeviceInfo {
+public class DeviceInfoUtil {
     //disabling instatiation
-    private DeviceInfo(){}
+    private DeviceInfoUtil(){}
 
     //function to return Device Specific Info
     public static JSONObject getDeviceInfo(Context context){
@@ -45,5 +47,11 @@ public class DeviceInfo {
         }
         String version = info.versionName;
         return version;
+    }
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager)  context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

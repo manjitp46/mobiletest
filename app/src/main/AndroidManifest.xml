@@ -48,6 +48,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".broadcastreciever.NetworkStateChangeReciever">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
 
     </application>
 

@@ -1,15 +1,11 @@
 package familytracker.snm.com.familytracker.listener;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,17 +17,14 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
 import familytracker.snm.com.familytracker.config.AppConfig;
 import familytracker.snm.com.familytracker.helper.SQLiteHandler;
 import familytracker.snm.com.familytracker.utils.BatteryUtil;
-import familytracker.snm.com.familytracker.utils.DeviceInfo;
+import familytracker.snm.com.familytracker.utils.DeviceInfoUtil;
 import familytracker.snm.com.familytracker.utils.LocationUtil;
 import familytracker.snm.com.familytracker.utils.TimestampUtils;
 import familytracker.snm.com.familytracker.utils.UserInfoUtil;
@@ -169,7 +162,7 @@ public class MyLocationListener implements LocationListener {
             dataBody.put("time",TimestampUtils.getISO8601StringForCurrentDate());
             dataBody.put("type",locationProvideName+" is "+status );
             dataBody.put("name", UserInfoUtil.getUserName(mcontext));
-            dataBody.put("deviceInfo", DeviceInfo.getDeviceInfo(mcontext));
+            dataBody.put("deviceInfo", DeviceInfoUtil.getDeviceInfo(mcontext));
             data.put("data",dataBody);
             Log.d(Tag,data.toString());
             Log.i(Tag,data.toString());

@@ -86,6 +86,7 @@ public class MainActivity extends Activity {
         if (!session.isLoggedIn()) {
             logoutUserFromDevice();
         }
+        sendBroadcast(new Intent("UPDATE_WITH_DB"));
 
         // Fetching user details from sqlite
         HashMap<String, String> user = db.getUserDetails();

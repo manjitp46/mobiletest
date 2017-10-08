@@ -22,7 +22,7 @@ public class RestartTrackingServiceReciever extends BroadcastReceiver {
         if (isLogout){
 //            context.stopService(new Intent(context,TrackingService.class));
         }else {
-            Intent i = new Intent(context, TrackingService.class);
+            Intent i = new Intent(context.getApplicationContext(), TrackingService.class);
             i.setAction(TrackingService.ACTION_START_MONITORING);
             context.startService(i);
         }

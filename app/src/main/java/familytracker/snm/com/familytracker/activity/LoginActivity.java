@@ -128,22 +128,22 @@ public class LoginActivity extends Activity {
 
         db.addUser(userName, userName+"@gmail.com", "123", "jwt_token");
         session.setLogin(true);
-        String primaryKey = UUID.randomUUID().toString();
-        Realm.init(this);
-        myRealm = Realm.getDefaultInstance();
-        myRealm.beginTransaction();
-        DeviceInfoModel deviceInfoModel = myRealm.createObject(DeviceInfoModel.class);
-        AssociationModel associationModel = myRealm.createObject(AssociationModel.class);
-        CheckinDataModel checkinDataModel = myRealm.createObject(CheckinDataModel.class,primaryKey);
-        deviceInfoModel.setBattery(BatteryUtil.getBatteryPercentage(this)+"");
-        deviceInfoModel.setAndroidVersion(Build.VERSION.RELEASE);
-        deviceInfoModel.setDeviceName(Build.MODEL);
-        associationModel.setName(userName);
-        checkinDataModel.setTime(TimestampUtils.getISO8601StringForCurrentDate());
-        checkinDataModel.setDeviceInfo(deviceInfoModel);
-        checkinDataModel.setAssociation(associationModel);
-        boolean isInterNateAvailable = DeviceInfoUtil.isNetworkAvailable(this);
-        myRealm.commitTransaction();
+////        String primaryKey = UUID.randomUUID().toString();
+////        Realm.init(this);
+////        myRealm = Realm.getDefaultInstance();
+////        myRealm.beginTransaction();
+////        DeviceInfoModel deviceInfoModel = myRealm.createObject(DeviceInfoModel.class);
+////        AssociationModel associationModel = myRealm.createObject(AssociationModel.class);
+////        CheckinDataModel checkinDataModel = myRealm.createObject(CheckinDataModel.class,primaryKey);
+////        deviceInfoModel.setBattery(BatteryUtil.getBatteryPercentage(this)+"");
+////        deviceInfoModel.setAndroidVersion(Build.VERSION.RELEASE);
+////        deviceInfoModel.setDeviceName(Build.MODEL);
+////        associationModel.setName(userName);
+////        checkinDataModel.setTime(TimestampUtils.getISO8601StringForCurrentDate());
+////        checkinDataModel.setDeviceInfo(deviceInfoModel);
+////        checkinDataModel.setAssociation(associationModel);
+////        boolean isInterNateAvailable = DeviceInfoUtil.isNetworkAvailable(this);
+//        myRealm.commitTransaction();
         try {
             JSONObject deviceObj = new JSONObject();
             deviceObj.put("deviceName",android.os.Build.MODEL);

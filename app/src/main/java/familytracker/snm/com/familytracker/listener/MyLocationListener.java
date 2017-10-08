@@ -20,14 +20,22 @@ import org.json.JSONObject;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import familytracker.snm.com.familytracker.SessionManager;
 import familytracker.snm.com.familytracker.config.AppConfig;
 import familytracker.snm.com.familytracker.helper.SQLiteHandler;
+import familytracker.snm.com.familytracker.model.AssociationModel;
+import familytracker.snm.com.familytracker.model.CheckinDataModel;
+import familytracker.snm.com.familytracker.model.CoordinateModel;
+import familytracker.snm.com.familytracker.model.DeviceInfoModel;
+import familytracker.snm.com.familytracker.model.LocationModel;
 import familytracker.snm.com.familytracker.utils.BatteryUtil;
 import familytracker.snm.com.familytracker.utils.DeviceInfoUtil;
 import familytracker.snm.com.familytracker.utils.LocationUtil;
 import familytracker.snm.com.familytracker.utils.TimestampUtils;
 import familytracker.snm.com.familytracker.utils.UserInfoUtil;
+import io.realm.Realm;
 
 
 /**
@@ -38,6 +46,7 @@ public class MyLocationListener implements LocationListener {
     Context mcontext;
     static HashMap<String,String > user;
     static final String TAG = "MylocationListioner";
+    private Realm myRealm;
    public MyLocationListener(){
 
     }
@@ -54,6 +63,8 @@ public class MyLocationListener implements LocationListener {
         Log.i(Tag,location.getProvider());
         Log.i(Tag,"Locatin Data: Lat = "+location.getLatitude()+" lng = " +location.getLongitude());
         sendLocationDataToServer(location,user);
+        SessionManager sessionManager = new SessionManager(mcontext);
+        sessionManager.setLatLng(location.getLatitude()+"",location.getLongitude()+"");
         String msg = location.getProvider() + " " +location.getAccuracy();
         Log.i(Tag,msg);
         Log.i(Tag,user.toString());
@@ -77,6 +88,49 @@ public class MyLocationListener implements LocationListener {
     }
 
     public void sendLocationDataToServer(final Location location, HashMap<String,String> user){
+
+
+        /*
+           start Saving in Local DB Location Info
+         */
+        String primaryKey = UUID.randomUUID().toString();
+        Realm.init(mcontext);
+        myRealm = Realm.getDefaultInstance();
+        myRealm.beginTransaction();
+        try {
+            DeviceInfoModel deviceInfoModel = myRealm.createObject(DeviceInfoModel.class);
+            AssociationModel associationModel = myRealm.createObject(AssociationModel.class);
+            LocationModel locationModel = myRealm.createObject(LocationModel.class);
+            CoordinateModel coordinateModel = myRealm.createObject(CoordinateModel.class);
+            CheckinDataModel checkinDataModel = myRealm.createObject(CheckinDataModel.class, primaryKey);
+            deviceInfoModel.setBattery(BatteryUtil.getBatteryPercentage(mcontext) + "");
+            deviceInfoModel.setAndroidVersion(Build.VERSION.RELEASE);
+            deviceInfoModel.setDeviceName(Build.MODEL);
+            associationModel.setName(user.get("name"));
+            locationModel.setType(location.getProvider());
+            locationModel.setAccuracy(location.getAccuracy() + "");
+            locationModel.setAddress(LocationUtil.getTextAddress(mcontext, location.getLatitude(), location.getLongitude(), 4));
+            locationModel.setAltitude(location.getAltitude() + "");
+            coordinateModel.setLat(location.getLatitude() + "");
+            coordinateModel.setLng(location.getLongitude() + "");
+            locationModel.setCoordinate(coordinateModel);
+            checkinDataModel.setTime(TimestampUtils.getISO8601StringForCurrentDate());
+            checkinDataModel.setLocation(locationModel);
+            checkinDataModel.setDeviceInfo(deviceInfoModel);
+            checkinDataModel.setAssociation(associationModel);
+            myRealm.commitTransaction();
+        }catch (Exception e){
+            Log.i(Tag,"error occur");
+        }
+//        boolean isInterNateAvailable = DeviceInfoUtil.isNetworkAvailable(this);
+
+
+
+
+
+        /*
+           end Saving in Local DB Location Info
+         */
 
         JSONObject jsonDataToSend = new JSONObject();
         String threadId = Thread.currentThread().getId()+"";

@@ -2,14 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="familytracker.snm.com.familytracker">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails
+    <!--
+    To auto-complete the email text field in the login form with the user's emails
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -26,35 +28,55 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.MyStartedService"/>
-        <service android:name=".service.TrackingService"
-            android:isolatedProcess="false"
-            android:enabled="true"
 
-        >
+        <service android:name=".service.MyStartedService" />
+        <service
+            android:name=".service.TrackingService"
+            android:enabled="true"
+            android:isolatedProcess="false">
             <intent-filter>
-                <action android:name="com.snm.familytracker.START_MONITORING"></action>
+                <action android:name="com.snm.familytracker.START_MONITORING" />
             </intent-filter>
         </service>
+
         <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
+
         <receiver
             android:name=".broadcastreciever.RestartTrackingServiceReciever"
             android:enabled="true"
             android:exported="true"
             android:label="RestartServiceWhenStopped">
             <intent-filter>
-                <action android:name="com.snm.familytracker.START_MONITORING"/>
+                <action android:name="com.snm.familytracker.START_MONITORING" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".broadcastreciever.NetworkStateChangeReciever">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
+        <activity android:name=".activity.MapActivity" />
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
+        <activity
+            android:name=".activity.MapsActivity"
+            android:label="@string/title_activity_maps"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

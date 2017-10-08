@@ -3,7 +3,6 @@ package familytracker.snm.com.familytracker.utils;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.nfc.Tag;
 import android.util.Log;
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class LocationUtil {
         //  end of dummy logic to get most accurate address info not working surety need to tested
             result =  getHumanReadableAddress(listOfAddress.get(start));
         }
-        return  (result!=null) ? result : "readAble Address Not found";
+        return  (result!=null) ? result :"";
     }
 
     // Util
@@ -60,7 +59,9 @@ public class LocationUtil {
         strBuilder.append(putSpaceChar());
         strBuilder.append((address.getSubLocality())!=null?address.getSubLocality():"");
         strBuilder.append(putSpaceChar());
-        strBuilder.append((address.getLocality())!= null&&!(address.getSubLocality().equals(address.getLocality()))?address.getLocality():"");
+        if(address.getSubLocality()!=null){
+            strBuilder.append((address.getLocality()) != null && !(address.getSubLocality().equals(address.getLocality())) ? address.getLocality() : "");
+        }
         strBuilder.append(putSpaceChar());
         strBuilder.append((address.getAdminArea())!=null?address.getAdminArea():"");
 

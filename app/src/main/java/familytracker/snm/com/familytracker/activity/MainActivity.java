@@ -42,6 +42,8 @@ public class MainActivity extends Activity {
     private TextView txtName;
     private TextView txtEmail;
     private Button btnLogout;
+    private Button btnMap;
+    private Button btnrealmCheck;
     private Intent trackingServiceIntent;
     private SQLiteHandler db;
     private static final String TAG = "MAINACTIVITY";
@@ -55,6 +57,8 @@ public class MainActivity extends Activity {
         txtName = (TextView) findViewById(R.id.name);
         txtEmail = (TextView) findViewById(R.id.email);
         btnLogout = (Button) findViewById(R.id.btnLogout);
+        btnMap = (Button) findViewById(R.id.btnMap);
+        btnrealmCheck =(Button)findViewById(R.id.realmCheck);
         //disabling logout button temporary to avoid logout
         btnLogout.setEnabled(true);
 //        if(!runtime_permissions())
@@ -107,7 +111,24 @@ public class MainActivity extends Activity {
                 logoutUserFromDevice();
             }
         });
+
+        btnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this,MapsActivity.class);
+                startActivity(i);
+            }
+        });
+
+        btnrealmCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this,MapActivity.class);
+                startActivity(i);
+            }
+        });
     }
+
 
     //overRiding onResumeMethod to fix issue when user prompted to start gps service not starting
 

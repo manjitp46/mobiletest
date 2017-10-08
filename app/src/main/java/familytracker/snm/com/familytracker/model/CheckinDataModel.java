@@ -60,4 +60,12 @@ public class CheckinDataModel extends RealmObject {
     public void setAssociation(AssociationModel association) {
         this.association = association;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

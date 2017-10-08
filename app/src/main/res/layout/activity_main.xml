@@ -46,4 +46,24 @@
             android:textSize="15dp" />
     </LinearLayout>
 
+    <Button
+        android:text="Go to Map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginTop="21dp"
+        android:id="@+id/btnMap"
+        android:layout_alignStart="@+id/linearLayout"
+        android:layout_alignEnd="@+id/linearLayout" />
+
+    <Button
+        android:text="PrintDBData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnMap"
+        android:layout_marginTop="24dp"
+        android:id="@+id/realmCheck"
+        android:layout_alignStart="@+id/btnMap"
+        android:layout_alignEnd="@+id/btnMap" />
+
 </RelativeLayout>

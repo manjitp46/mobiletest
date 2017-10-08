@@ -25,6 +25,10 @@
     <string name="name">Fullname</string>
     <string name="btn_start_service">Start</string>
     <string name="btn_end_service">end</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyCpIjcDAl_5WK5pMJ4x_NwrsKwo9EM0_pE
+    </string>
 
 
 </resources>

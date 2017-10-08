@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by kumanjit on 9/26/2017.
  */
@@ -45,5 +48,20 @@ public class SessionManager {
 
     public boolean isLoggedIn(){
         return pref.getBoolean(KEY_IS_LOGGEDIN, false);
+    }
+    public void setLatLng(String lat,String lng){
+        editor.putString("lat",lat);
+        editor.putString("lng",lng);
+        editor.commit();
+    }
+    public JSONObject getLatlng(){
+        JSONObject object = new JSONObject();
+        try {
+            object.put("lat",pref.getString("lat",null));
+            object.put("lng",pref.getString("lng",null));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 }
